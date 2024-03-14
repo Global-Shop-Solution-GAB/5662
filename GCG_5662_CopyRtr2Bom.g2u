@@ -1,0 +1,33 @@
+Program.Sub.Preflight.Start
+Program.Sub.Preflight.End
+
+Program.Sub.Main.Start
+F.Intrinsic.Control.Try
+	V.Local.sError.Declare(String," ")
+	v.Local.sFile.Declare(String)
+	'coded for IDEAL Fasteners by Silas Fulsom on 10/24/2019
+	'this gets positions 13-15 from bom parent and looks up router by that variable using the copy-rtr button. 
+	'new hooks were added by core to BOM New and BOM Open modes to support this. 
+	
+	'passed variable for positions 13-15 of bom parent part# Variable.Passed.BOM-13-15
+	'set variable to Variable.Passed.000001
+	v.Local.iret.Declare(Long)
+	Variable.Passed.000001.Set(v.Passed.BOM-13-15)
+	
+	'call script async to send keystrokes after jobstream ends on this script
+	'have to do this because the core job stream is locked pending this script to end.
+	f.Intrinsic.String.Build("{0}\GCG_5662_SendKeys.g2u",v.Caller.GasDir,v.Local.sFile)
+	f.Global.General.CallAsyncGAS(v.Local.sFile,v.Caller.PID,v.Local.iret)
+	f.Intrinsic.Control.End
+
+	F.Intrinsic.Control.ExitSub
+
+F.Intrinsic.Control.Catch
+	F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+		F.Intrinsic.String.Build("Project: {0}{1}Subroutine: {2}{1}Error Occurred {3} with description {4}","",V.Ambient.NewLine,V.Ambient.CurrentSubroutine,V.Ambient.ErrorNumber,V.Ambient.ErrorDescription,V.Local.sError)
+		F.Intrinsic.UI.Msgbox(V.Local.sError)
+	F.Intrinsic.Control.EndIf
+Function.Intrinsic.Control.EndTry
+
+
+Program.Sub.Main.End
