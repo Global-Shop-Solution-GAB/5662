@@ -1,0 +1,26 @@
+Program.Sub.Preflight.Start
+Program.Sub.Preflight.End
+
+Program.Sub.Main.Start
+F.Intrinsic.Control.Try
+	V.Local.sError.Declare(String," ")
+	'coded for IDEAL Fasteners by Silas Fulsom on 10/24/2019
+	'this script assumes cursor is in the from-router textbox already and two tabstops + enter will fire browser for user to automate process for them looking up value currently set to the screen.
+	'parent script "GCG_5662_CopyRtr2Bom.g2u" calls this script
+	f.Intrinsic.UI.SleepMS(10)
+	f.Intrinsic.Task.AppActivate(v.Caller.Switches)
+	f.Intrinsic.Task.SendKeys("{TAB}")
+	f.Intrinsic.Task.SendKeys("{TAB}")
+	f.Intrinsic.Task.SendKeys("{ENTER}")
+
+	F.Intrinsic.Control.ExitSub
+
+F.Intrinsic.Control.Catch
+	F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+		F.Intrinsic.String.Build("Project: {0}{1}Subroutine: {2}{1}Error Occurred {3} with description {4}","",V.Ambient.NewLine,V.Ambient.CurrentSubroutine,V.Ambient.ErrorNumber,V.Ambient.ErrorDescription,V.Local.sError)
+		F.Intrinsic.UI.Msgbox(V.Local.sError)
+	F.Intrinsic.Control.EndIf
+Function.Intrinsic.Control.EndTry
+
+
+Program.Sub.Main.End
